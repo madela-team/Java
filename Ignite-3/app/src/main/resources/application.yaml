@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: ignite3-compute-demo
+  datasource:
+    url: jdbc:ignite:thin://localhost:10800
+    driver-class-name: org.apache.ignite.jdbc.IgniteJdbcDriver
+ignite:
+  address: "127.0.0.1:10800"

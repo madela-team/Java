@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+group = 'ru.madela'
+version = '1.0.0'
+description = 'primeCheckJob'
+
+jar {
+    archiveBaseName.set("prime-check-job")
+    archiveVersion.set(version)
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.ignite:ignite-client:3.0.0'
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

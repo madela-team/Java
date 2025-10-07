@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  ignite:
+    image: apacheignite/ignite:3.0.0
+    container_name: ignite3
+    ports:
+      - "10800:10800" # client
+      - "10300:10300" # REST/management
+    command: [ "--node-name", "node1" ]
+
