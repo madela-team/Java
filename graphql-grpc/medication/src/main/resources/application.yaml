@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: medication-service  # Уникальное имя Spring-приложения. Используется в логировании, Consul и других интеграциях.
+
+  cloud:
+    consul:
+      host: localhost         # Адрес Consul-сервера, который используется для service discovery.
+      port: 8500              # Порт, на котором работает Consul-сервер.
+      discovery:
+        prefer-ip-address: false   # Использовать hostname, а не IP-адрес, при регистрации в Consul.
+        port: 9090                # Порт gRPC-сервера, по которому сервис будет доступен в Consul.
+        register: true           # Разрешает регистрацию сервиса в Consul.
+        enabled: true            # Включает функциональность discovery через Consul.
+        health-check-type: ttl   # Тип проверки здоровья — TTL. Сам сервис должен отправлять heartbeat.
+        ttl: 15s                 # Временной интервал, в течение которого должен приходить heartbeat.
+        instance-id: ${spring.application.name}-${random.value}
+        # Уникальный ID экземпляра сервиса, используется для различения при регистрации.
+        heartbeat:
+          enabled: true         # Включение отправки heartbeat для поддержки TTL проверки.
+        hostname: localhost     # Имя хоста, которое будет использоваться для регистрации сервиса.
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/medicationdb  # Адрес базы данных PostgreSQL.
+    username: user                                      # Имя пользователя для подключения к БД.
+    password: password                                  # Пароль пользователя.
+    driver-class-name: org.postgresql.Driver            # JDBC-драйвер PostgreSQL.
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    # Путь до главного changelog-файла Liquibase, содержащего миграции схемы БД.
+    enabled: true # Включение Liquibase для автоматического применения миграций при запуске приложения.
+
+server:
+  port: 8090       # Порт, на котором будет запущен REST-сервер Spring Boot (в том числе endpoints actuator'а).
+
+grpc:
+  server:
+    port: 9090     # Порт, на котором работает gRPC-сервер. Важно: именно этот порт регистрируется в Consul.
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Открыть все actuator endpoints через HTTP.
+  endpoint:
+    health:
+      show-details: always  # Всегда отображать подробности о состоянии приложения в `/actuator/health`.
+  metrics:
+    export:
+      prometheus:
+        enabled: true  # Включение экспорта метрик в формате Prometheus, доступных через `/actuator/prometheus`.
+
+logging:
+  level:
+    root: INFO  # Глобальный уровень логирования для всего приложения. INFO — стандартный рабочий уровень.

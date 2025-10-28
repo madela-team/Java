@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+// Пространство имён — используется в Java и других языках для генерации классов
+package dev.madela.apteka.user;
+
+// Настройки генерации Java-кода
+option java_multiple_files = true;
+option java_package = "dev.madela.apteka.proto.user";
+option java_outer_classname = "UserProto";
+
+// ======== Запросы ==========
+
+// Получение пользователя по ID
+message UserIdRequest {
+  string id = 1; // UUID пользователя
+}
+
+// Создание нового пользователя
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  // роль не указывается — предполагается, что по умолчанию будет CUSTOMER
+}
+
+// Получение списка пользователей с фильтрами и пагинацией
+message UserListRequest {
+  string role = 1;                 // фильтр по роли
+  string registration_before = 2; // дата до (в формате yyyy-MM-dd)
+  string registration_after = 3;  // дата после
+  int32 page = 4;                 // номер страницы (0-индексация)
+  int32 size = 5;                 // размер страницы
+}
+
+// Запрос на удаление пользователя
+message DeleteUserRequest {
+  string id = 1;
+}
+
+// ========== Ответы ==========
+
+// Стандартный ответ с данными пользователя
+message UserResponse {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string role = 4;
+  string registration_date = 5; // формат: yyyy-MM-dd
+}
+
+// Ответ со списком пользователей и общим количеством
+message UserListResponse {
+  repeated UserResponse users = 1;
+  int32 total_count = 2;
+}
+
+// Краткая информация о заказе пользователя (например, при удалении)
+message OrderSummary {
+  string id = 1;     // ID заказа
+  string status = 2; // статус заказа (например, CREATED, CANCELLED)
+}
+
+// Ответ при удалении пользователя — возвращает удалённого пользователя и его отменённые заказы
+message DeleteUserResponse {
+  string id = 1;
+  string name = 2;
+  repeated OrderSummary cancelled_orders = 3;
+}
+
+// ========== gRPC-сервис ==========
+service UserService {
+  // Получить пользователя по ID
+  rpc GetUserById (UserIdRequest) returns (UserResponse);
+
+  // Создать нового пользователя
+  rpc CreateUser (CreateUserRequest) returns (UserResponse);
+
+  // Получить список пользователей по фильтрам и пагинации
+  rpc GetUserList (UserListRequest) returns (UserListResponse);
+
+  // Удалить пользователя и вернуть список отменённых заказов
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+}

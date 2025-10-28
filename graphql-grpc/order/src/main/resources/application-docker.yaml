@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: order-service  # Имя сервиса. Используется при регистрации в Consul и в логах.
+
+  datasource:
+    url: jdbc:postgresql://postgres-order:5432/orderdb
+    # JDBC-URL подключения к PostgreSQL-контейнеру.
+    # 'postgres-order' — это имя сервиса в docker-compose (hostname внутри Docker-сети).
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  cloud:
+    consul:
+      host: consul        # Имя контейнера Consul (в docker-compose). Используется как hostname.
+      port: 8500
+      discovery:
+        port: 9092        # gRPC-порт сервиса. Его Consul будет использовать для обращения.
+        register: true
+        enabled: true
+        prefer-ip-address: false  # Использовать hostname, а не IP-адрес
+        health-check-type: ttl    # Проверка живости через TTL (не HTTP)
+        ttl: 15s                  # Интервал между heartbeat'ами, ожидаемый Consul
+        instance-id: ${spring.application.name}-${random.value}  # Уникальный ID инстанса
+        heartbeat:
+          enabled: true          # Включение heartbeat-отправки (обязателен при TTL-проверке)
+        hostname: consul         # Имя, с которым сервис будет зарегистрирован в Consul

@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "e704c45a-010f-4e2e-9672-ee913dfeaace",
+    "pharmacyId": "P003",
+    "medicationId": "14e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 38,
+    "expiryDate": "2026-02-24"
+  },
+  {
+    "_id": "98c1083e-b7ea-4519-bea3-b580904fbb86",
+    "pharmacyId": "P002",
+    "medicationId": "24e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 39,
+    "expiryDate": "2025-12-09"
+  },
+  {
+    "_id": "cd46cedb-ec96-44fb-b88b-146a1835dfef",
+    "pharmacyId": "P003",
+    "medicationId": "34e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 97,
+    "expiryDate": "2025-08-24"
+  },
+  {
+    "_id": "56ba8a1f-3397-4f92-8479-c95f979b75ed",
+    "pharmacyId": "P003",
+    "medicationId": "44e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 53,
+    "expiryDate": "2026-04-19"
+  },
+  {
+    "_id": "a3e1424d-cb75-466b-b597-4b506d3dda51",
+    "pharmacyId": "P001",
+    "medicationId": "54e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 11,
+    "expiryDate": "2025-09-29"
+  },
+  {
+    "_id": "3f7340dd-9551-4821-8db0-2f778891fb1a",
+    "pharmacyId": "P003",
+    "medicationId": "64e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 51,
+    "expiryDate": "2026-04-15"
+  },
+  {
+    "_id": "cbc2fe05-d795-4d89-85f0-54bffdde0905",
+    "pharmacyId": "P001",
+    "medicationId": "74e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 43,
+    "expiryDate": "2026-01-12"
+  },
+  {
+    "_id": "0aaa9d6a-9acd-49a9-945c-611411df04db",
+    "pharmacyId": "P001",
+    "medicationId": "84e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 11,
+    "expiryDate": "2025-11-28"
+  },
+  {
+    "_id": "0e650ec4-5b1f-4bae-b5f0-612096ce4047",
+    "pharmacyId": "P002",
+    "medicationId": "94e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 98,
+    "expiryDate": "2026-01-30"
+  },
+  {
+    "_id": "159523b6-0bfd-4e91-8f2d-045d109a5f81",
+    "pharmacyId": "P003",
+    "medicationId": "a4e6f5c9-91e6-4ac6-98ad-bf701f3591c6",
+    "quantity": 55,
+    "expiryDate": "2025-08-03"
+  }
+]

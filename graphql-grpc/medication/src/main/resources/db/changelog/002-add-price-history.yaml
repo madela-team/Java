@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-price-history
+      author: madela
+      changes:
+        - createTable:
+            tableName: medication_price_history
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: medication_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: old_price
+                  type: DOUBLE PRECISION
+                  constraints:
+                    nullable: false
+              - column:
+                  name: new_price
+                  type: DOUBLE PRECISION
+                  constraints:
+                    nullable: false
+              - column:
+                  name: changed_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: medication_price_history
+            baseColumnNames: medication_id
+            referencedTableName: medication
+            referencedColumnNames: id
+            constraintName: fk_med_history_med

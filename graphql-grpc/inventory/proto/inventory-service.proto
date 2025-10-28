@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+// Пространство имён, соответствует структуре Java-пакета
+package dev.madela.apteka.inventory;
+
+option java_multiple_files = true; // генерировать отдельный Java-файл для каждого message и service
+option java_package = "dev.madela.apteka.proto.inventory"; // Java-пакет для сгенерированных классов
+option java_outer_classname = "InventoryProto"; // Имя внешнего Java-класса (если бы всё генерировалось в один файл)
+
+// gRPC-сервис для работы с данными по остаткам медикаментов
+service InventoryService {
+
+  // Получение остатков по конкретному медикаменту (и, опционально, по аптеке)
+  rpc GetStock (StockRequest) returns (StockResponse);
+
+  // Обновление остатков по аптеке (можно увеличивать или уменьшать значения)
+  rpc UpdateStock (UpdateStockRequest) returns (StockResponse);
+
+  // Получение списка просроченных медикаментов на указанную дату
+  rpc GetExpiredMedications (ExpiredRequest) returns (StockResponse);
+
+  // Массовое получение остатков по списку medication_id
+  rpc GetStocksByMedicationIds (MedicationIdsRequest) returns (StockResponse);
+
+  // Удаление остатков конкретного медикамента по всем аптекам
+  rpc DeleteStockByMedication (DeleteStockByMedicationRequest) returns (DeleteStockByMedicationResponse);
+}
+
+// --- Запросы ---
+
+// Для массового получения остатков по списку медикаментов
+message MedicationIdsRequest {
+  repeated string medication_ids = 1; // список идентификаторов медикаментов
+}
+
+// Запрос остатков: по медикаменту и, опционально, по аптеке
+message StockRequest {
+  string medication_id = 1;
+  string pharmacy_id = 2; // необязательное поле, если хотим уточнить по конкретной аптеке
+}
+
+// Запрос на обновление остатков по аптеке
+message UpdateStockRequest {
+  string pharmacy_id = 1;
+  repeated StockUpdate updates = 2; // список обновлений остатков (может быть пустым)
+}
+
+// Запрос на получение просроченных медикаментов
+message ExpiredRequest {
+  string expiry_date = 1; // дата в формате YYYY-MM-DD
+}
+
+// --- Ответы ---
+
+// Универсальный ответ с множеством записей остатков
+message StockResponse {
+  repeated PharmacyStock stocks = 1; // список остатков
+}
+
+// Запрос на обновление остатков одного или нескольких медикаментов
+message StockUpdate {
+  string medication_id = 1;
+  int32 delta = 2; // разница в остатках (может быть отрицательной при списании)
+}
+
+// Удаление остатков по медикаменту
+message DeleteStockByMedicationRequest {
+  string medication_id = 1;
+}
+
+// Ответ на удаление остатков
+message DeleteStockByMedicationResponse {
+  bool success = 1;
+}
+
+// Структура, описывающая остаток медикамента в аптеке
+message PharmacyStock {
+  string pharmacy_id = 1;
+  string medication_id = 2;
+  int32 quantity = 3;
+  string expiry_date = 4; // строковое представление даты (формат YYYY-MM-DD)
+}

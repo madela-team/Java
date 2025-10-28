@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: inventory-service  # Имя сервиса — будет зарегистрировано в Consul под этим именем
+
+  data:
+    mongodb:
+      host: mongodb-inventory  # В Docker-сети Mongo доступен по имени сервиса (указан в docker-compose.yml)
+      port: 27017              # Стандартный порт MongoDB
+      database: inventorydb    # Название базы данных, в которую загружается pharmacy_stock.json
+
+  cloud:
+    consul:
+      host: consul             # Имя контейнера Consul в docker-compose (hostname в Docker-сети)
+      port: 8500               # Порт HTTP API Consul
+      discovery:
+        port: 9091             # gRPC-порт приложения (тот, что слушает сервер)
+        register: true         # Включаем регистрацию в Consul
+        enabled: true          # Включаем клиентскую часть Service Discovery
+        prefer-ip-address: false # Не регистрировать IP, использовать hostname
+        health-check-type: ttl   # Health-check через TTL (Time To Live)
+        ttl: 15s                 # Интервал TTL (проверка живости сервиса)
+        instance-id: ${spring.application.name}-${random.value} # Уникальный ID для инстанса
+        heartbeat:
+          enabled: true        # Включаем отправку heartbeat в TTL Consul
+        hostname: consul       # Имя узла, под которым сервис будет зарегистрирован (Consul ожидает именно такое имя)

@@ -1,0 +1,42 @@
+services:
+  postgres-user:
+    image: postgres:15
+    #   container_name: postgres-user-local  # Можно включить, если нужно зафиксированное имя контейнера
+
+    environment:
+      POSTGRES_DB: users                # Название создаваемой базы данных
+      POSTGRES_USER: user              # Пользователь БД
+      POSTGRES_PASSWORD: password      # Пароль
+      POSTGRES_INITDB_ARGS: "--auth=md5" # Включение паролей на этапе инициализации (md5-шифрование)
+
+    ports:
+      - "5434:5432"  # Хост-порт → Порт контейнера. 5434 на машине, 5432 внутри (стандартный PostgreSQL)
+
+  user:
+    build:
+      context: ../user-service  # Путь к Dockerfile. Собираем образ из исходников user-сервиса.
+
+    container_name: user-service-local  # Имя контейнера (удобно для отладки)
+
+    ports:
+      - "9093:9093"  # gRPC-порт (и внутренний, и внешний) для работы сервиса
+
+    depends_on:
+      - postgres-user  # Обеспечивает запуск user-сервиса только после запуска PostgreSQL
+
+    environment:
+      - SERVICE_PORT=9093                  # Порт, на котором работает gRPC-сервер
+      - SERVICE_NAME=user-service          # Имя сервиса (для Consul)
+      - SERVICE_ID=user-service-1          # Уникальный ID экземпляра (для регистрации в Consul)
+      - SERVICE_ADDRESS=user-service-local # Адрес, под которым сервис зарегистрируется в Consul
+
+      - CONSUL_HOST=consul                 # Имя хоста (контейнера), где запущен Consul
+      - CONSUL_PORT=8500                   # Порт Consul API
+
+      - POSTGRES_HOST=postgres-user        # Имя хоста (контейнера) с БД PostgreSQL
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=users
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+
+    restart: unless-stopped  # Перезапуск контейнера, если он остановился не по команде пользователя

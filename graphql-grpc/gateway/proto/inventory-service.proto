@@ -1,0 +1,88 @@
+syntax = "proto3"; // Используем современный синтаксис protobuf
+
+package dev.madela.apteka.inventory;
+// Пространство имён для инвентаризационного микросервиса. Все сообщения и сервисы будут сгруппированы логически.
+
+option java_multiple_files = true; // Каждый message и service будет сгенерирован в отдельный Java-файл.
+option java_package = "dev.madela.apteka.proto.inventory"; // Java-пакет, в который попадут все сгенерированные классы.
+option java_outer_classname = "InventoryProto"; // Внешний класс (используется, если multiple_files = false).
+
+
+// gRPC-сервис для работы со складами аптек
+service InventoryService {
+
+  // Получить информацию об остатке конкретного препарата (опционально с фильтрацией по аптеке)
+  rpc GetStock (StockRequest) returns (StockResponse);
+
+  // Обновить количество препаратов на складе (например, при продаже или поставке)
+  rpc UpdateStock (UpdateStockRequest) returns (StockResponse);
+
+  // Получить список просроченных препаратов, чей срок годности истёк до указанной даты
+  rpc GetExpiredMedications (ExpiredRequest) returns (StockResponse);
+
+  // Получить остатки по списку medication_id
+  rpc GetStocksByMedicationIds (MedicationIdsRequest) returns (StockResponse);
+
+  // Удалить остаток по конкретному medication_id (например, при удалении препарата из системы)
+  rpc DeleteStockByMedication(DeleteStockByMedicationRequest) returns (DeleteStockByMedicationResponse);
+}
+
+
+// ----------- Запросы ------------
+
+// Запрос для получения остатков по нескольким препаратам
+message MedicationIdsRequest {
+  repeated string medication_ids = 1; // список ID препаратов
+}
+
+// Запрос для получения остатка по конкретному препарату и аптеке
+message StockRequest {
+  string medication_id = 1; // обязательный ID препарата
+  string pharmacy_id = 2;   // необязательный ID аптеки (если не указан — вернуть по всем аптекам)
+}
+
+// Запрос на обновление остатков (список изменений по аптеке)
+message UpdateStockRequest {
+  string pharmacy_id = 1;            // ID аптеки
+  repeated StockUpdate updates = 2;  // список обновлений: какие препараты и на сколько
+}
+
+// Запрос на получение просроченных медикаментов
+message ExpiredRequest {
+  string expiry_date = 1; // Дата, до которой препарат считается просроченным. Формат: YYYY-MM-DD
+}
+
+// Запрос на удаление остатков по препарату
+message DeleteStockByMedicationRequest {
+  string medication_id = 1;
+}
+
+
+// ----------- Ответы ------------
+
+// Ответ, содержащий список остатков препаратов
+message StockResponse {
+  repeated PharmacyStock stocks = 1; // список остатков по аптекам
+}
+
+// Ответ на удаление записи об остатке
+message DeleteStockByMedicationResponse {
+  bool success = 1; // true — если удаление прошло успешно
+}
+
+
+// ----------- Вспомогательные структуры ------------
+
+// Информация об остатке препарата в аптеке
+message PharmacyStock {
+  string pharmacy_id = 1;    // ID аптеки
+  string medication_id = 2;  // ID препарата
+  int32 quantity = 3;        // Количество единиц на складе
+  string expiry_date = 4;    // Срок годности препарата
+}
+
+// Структура для изменения количества препарата
+message StockUpdate {
+  string medication_id = 1; // ID препарата
+  int32 delta = 2;          // Изменение количества (может быть отрицательным — например, при продаже)
+}

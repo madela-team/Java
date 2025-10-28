@@ -1,0 +1,75 @@
+extend type Query {
+    medications(
+        filter: MedicationFilter
+        pagination: Pagination
+        sort: Sort
+    ): MedicationPage!
+}
+
+extend type Mutation {
+    deleteMedication(id: ID!): DeletedMedicationResult!
+    deleteExpiredMedications(expiryDate: LocalDate!): DeletedMedicationExpireResult!
+    updateMedicationPrice(id: ID!, newPrice: Float!): UpdateMedicationPriceResult!
+}
+
+type UpdateMedicationPriceResult {
+    id: ID!
+    name: String!
+    oldPrice: Float!
+    newPrice: Float!
+    updatedAt: String!
+}
+
+type Medication {
+    id: ID!
+    name: String!
+    price: Float!
+    category: String!
+    substances: [ActiveSubstance!]!
+    pharmacyStock: [PharmacyStock!] @external
+}
+
+
+type ActiveSubstance {
+    name: String!
+    concentration: Float!
+}
+
+input MedicationFilter {
+    category: String
+    categories: [String]
+    priceRange: PriceRangeInput
+    isPrescriptionOnly: Boolean
+    activeSubstances: ActiveSubstanceFilter
+}
+
+type MedicationPage {
+    items: [Medication!]!
+    totalCount: Int!
+}
+
+input ActiveSubstanceFilter {
+    name: String
+    concentration: ConcentrationFilter
+}
+
+input ConcentrationFilter {
+    gt: Float
+    lt: Float
+}
+
+input PriceRangeInput {
+    min: Float
+    max: Float
+}
+
+type DeletedMedicationResult {
+    id: ID!
+    name: String!
+    success: Boolean!
+}
+
+type DeletedMedicationExpireResult {
+    count: Int!
+    deletedIds: [String!]!
+}

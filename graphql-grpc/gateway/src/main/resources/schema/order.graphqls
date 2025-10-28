@@ -1,0 +1,65 @@
+# -------------------- QUERY --------------------
+
+extend type Query {
+    # Получение заказов конкретного пользователя
+    orders(userId: ID!): [Order!]!
+    # Аргумент:
+    # - userId: обязательный идентификатор пользователя
+    #
+    # Возвращает:
+    # - массив заказов (каждый Order гарантированно не null, список тоже не null)
+}
+
+# -------------------- MUTATION --------------------
+
+extend type Mutation {
+    # Создание нового заказа
+    createOrder(input: OrderInput!): Order!
+    # Аргумент:
+    # - input: структура с полями userId, items, deliveryAddress
+    # Возвращает:
+    # - созданный заказ
+}
+
+
+# -------------------- ОСНОВНОЙ ТИП --------------------
+
+type Order {
+    id: ID!                    # Уникальный ID заказа
+    userId: ID!                # ID пользователя, оформившего заказ
+    items: [OrderItem!]!       # Список заказанных товаров
+    createdAt: LocalDate!      # Дата создания заказа (пользовательский scalar)
+    status: String!            # Статус заказа (например, CREATED, CANCELLED, DELIVERED)
+    deliveryAddress: String    # Адрес доставки (может быть null, если заказ самовывоз)
+    total: Float!              # Общая сумма заказа
+    medications: [Medication!]!
+    # Список медикаментов, соответствующих item'ам заказа
+    # Эти данные, как правило, подтягиваются отдельно через GraphQL-фетчеры, 
+    # так как gRPC-OrderService возвращает только medicationId
+    #
+    # Можно использовать @external (если подключен федеративный GraphQL), 
+    # либо реализовать резолвер вручную через DGS DataFetcher
+}
+
+# Описание одного элемента в заказе (позиций)
+type OrderItem {
+    medicationId: ID!  # ID медикамента
+    quantity: Int!     # Количество заказанных единиц
+    price: Float!      # Цена на момент оформления (фиксируется)
+}
+
+
+# -------------------- ВХОДНЫЕ ТИПЫ --------------------
+
+# Входной объект для создания заказа
+input OrderInput {
+    userId: ID!                        # ID пользователя
+    items: [OrderItemInput!]!         # Список заказанных препаратов
+    deliveryAddress: String           # Адрес (опционально)
+}
+
+# Входной объект для каждого элемента заказа
+input OrderItemInput {
+    medicationId: ID!  # ID медикамента
+    quantity: Int!     # Количество
+}

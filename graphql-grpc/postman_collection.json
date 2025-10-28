@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "357fa6c3-68b9-4ee9-90f3-addd52a1c4e3",
+		"name": "GraphQL Gateway Tests",
+		"description": "Коллекция запросов для тестирования GraphQL шлюза",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4001766"
+	},
+	"item": [
+		{
+			"name": "Удаление лекарства",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"mutation {\\n  deleteMedication(id: \\\"123\\\") {\\n    id\\n    name\\n    deletedPharmacyStocks { pharmacyId medicationId }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Фильтрация лекарств с пагинацией",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"query {\\n  medications(\\n    filter: {\\n      isPrescriptionOnly: true,\\n      categories: [\\\"Антибиотики\\\", \\\"Обезболивающие\\\"]\\n    },\\n    pagination: { page: 1, size: 10 },\\n    sort: { field: \\\"price\\\", direction: DESC }\\n  ) {\\n    items { id name price }\\n    totalCount\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поиск по составу",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"query {\\n  medications(\\n    filter: {\\n      activeSubstances: { name: \\\"парацетамол\\\", concentration: { gt: 500 } }\\n    }\\n  ) {\\n    id\\n    name\\n    substances { name concentration }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Агрегация по аптеке",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"query {\\n  pharmacyStatistics(id: \\\"P001\\\") {\\n    totalMedications\\n    averagePrice\\n    stockByCategory { category count }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Создание заказа",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"mutation {\\n  createOrder(input: {\\n    userId: \\\"123\\\",\\n    items: [\\n      { medicationId: \\\"456\\\", quantity: 2 },\\n      { medicationId: \\\"789\\\", quantity: 1 }\\n    ],\\n    deliveryAddress: \\\"ул. Пушкина, 10\\\"\\n  }) {\\n    id\\n    total\\n    status\\n    medications { name price }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Обновление цены лекарства",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"mutation {\\n  updateMedicationPrice(id: \\\"456\\\", newPrice: 150.99) {\\n    id\\n    name\\n    oldPrice\\n    newPrice\\n    updatedAt\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление просроченных лекарств",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"mutation {\\n  deleteExpiredMedications(expiryDate: \\\"2024-01-01\\\") {\\n    count\\n    deletedIds\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Лекарства по аптекам",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"query {\\n  medicationsByPharmacy(\\n    filter: { category: \\\"Витамины\\\" },\\n    groupBy: \\\"pharmacyId\\\"\\n  ) {\\n    pharmacyId\\n    items { id name }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Пользователи с заказами",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"query {\\n  users(\\n    filter: { role: \\\"CUSTOMER\\\", registrationDate: { after: \\\"2023-01-01\\\" } },\\n    pagination: { page: 1, size: 5 }\\n  ) {\\n    items {\\n      id\\n      name\\n      orders(status: \\\"COMPLETED\\\") {\\n        id\\n        medications { name }\\n      }\\n    }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление пользователя",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"mutation {\\n  deleteUser(id: \\\"123\\\") {\\n    id\\n    name\\n    cancelledOrders { id }\\n  }\\n}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
