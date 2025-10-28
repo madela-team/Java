@@ -1,0 +1,24 @@
+extend type Query {
+    medicationsByPharmacy(
+        filter: MedicationFilter
+        groupBy: String
+    ): [PharmacyMedicationGroup!]!
+
+    pharmacyStatistics(id: ID!): PharmacyStatistics!
+}
+
+type PharmacyMedicationGroup {
+    pharmacyId: ID!
+    items: [Medication!]!
+}
+
+type PharmacyStatistics {
+    totalMedications: Int!
+    averagePrice: Float!
+    stockByCategory: [CategoryStock!]!
+}
+
+type CategoryStock {
+    category: String!
+    count: Int!
+}

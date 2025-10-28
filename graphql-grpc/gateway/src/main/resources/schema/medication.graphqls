@@ -1,0 +1,107 @@
+# -------------------- QUERY --------------------
+
+extend type Query {
+    # Получение списка медикаментов с возможностью фильтрации, пагинации и сортировки
+    medications(
+        filter: MedicationFilter         # Необязательный фильтр (по категории, цене, веществам и т.д.)
+        pagination: Pagination           # Входной тип пагинации: page + size
+        sort: Sort                       # Указание поля сортировки и направления
+    ): MedicationPage!
+    # Восклицательный знак (!) после типа означает, что значение **обязательно и не может быть null**
+    # Даже если в списке нет медикаментов, вернётся пустая страница (items = [], totalCount = 0)
+}
+
+# -------------------- MUTATION --------------------
+
+extend type Mutation {
+    # Удаление конкретного медикамента по ID
+    deleteMedication(id: ID!): DeletedMedicationResult!
+
+    # Массовое удаление просроченных медикаментов по дате
+    deleteExpiredMedications(expiryDate: LocalDate!): DeletedMedicationExpireResult!
+
+    # Обновление цены препарата
+    updateMedicationPrice(id: ID!, newPrice: Float!): UpdateMedicationPriceResult!
+}
+
+# -------------------- РЕЗУЛЬТАТЫ MUTATION --------------------
+
+type UpdateMedicationPriceResult {
+    id: ID!
+    name: String!
+    oldPrice: Float!
+    newPrice: Float!
+    updatedAt: String!  # Дата/время обновления в ISO-формате (строкой)
+}
+
+type DeletedMedicationResult {
+    id: ID!
+    name: String!
+    success: Boolean!  # Флаг успешности операции
+}
+
+type DeletedMedicationExpireResult {
+    count: Int!              # Кол-во удалённых медикаментов
+    deletedIds: [String!]!   # Массив ID удалённых медикаментов (пустой если ничего не было)
+}
+
+# -------------------- ОСНОВНЫЕ ТИПЫ --------------------
+
+type Medication {
+    id: ID!
+    name: String!
+    price: Float!
+    category: String!
+
+    substances: [ActiveSubstance!]!
+    # Восклицательный знак (!) после массива означает:
+    # - список не может быть null
+    # - элементы внутри списка тоже не могут быть null
+
+    pharmacyStock: [PharmacyStock!] @external
+    # @external — это **директива Netflix DGS**, которая говорит, что поле pharmacyStock **не маппится напрямую из данных**
+    # а предоставляется вручную через **DataFetcher** в Java-коде.
+    # Таким образом, это "расширяемое" поле, данные к которому подтягиваются отдельно, например, через gRPC-вызов.
+}
+
+# Описание действующего вещества
+type ActiveSubstance {
+    name: String!
+    concentration: Float!
+}
+
+# Страница с медикаментами
+type MedicationPage {
+    items: [Medication!]!  # Список медикаментов
+    totalCount: Int!       # Общее количество (для пагинации)
+}
+
+
+# -------------------- INPUT: ФИЛЬТРЫ --------------------
+
+# Входной фильтр для запроса списка медикаментов
+input MedicationFilter {
+    category: String                # Одна категория
+    categories: [String]            # Список категорий (например, ["антибиотики", "жаропонижающее"])
+    priceRange: PriceRangeInput     # Диапазон цен
+    isPrescriptionOnly: Boolean     # Фильтр по рецептурным препаратам
+    activeSubstances: ActiveSubstanceFilter  # Фильтр по действующим веществам
+}
+
+# Входной тип для фильтрации по веществам
+input ActiveSubstanceFilter {
+    name: String                      # Название вещества
+    concentration: ConcentrationFilter # Диапазон концентрации
+}
+
+# Диапазон значений концентрации
+input ConcentrationFilter {
+    gt: Float  # больше чем (greater than)
+    lt: Float  # меньше чем (less than)
+}
+
+# Диапазон цен
+input PriceRangeInput {
+    min: Float
+    max: Float
+}

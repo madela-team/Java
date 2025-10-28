@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: order-service  # Уникальное имя микросервиса. Используется в логах, при регистрации в Consul и в мониторинге.
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/orderdb
+    # JDBC-URL подключения к PostgreSQL. Порт 5433 (не стандартный) — чтобы не конфликтовать с другими сервисами (например, medication).
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver  # Драйвер PostgreSQL
+
+  jpa:
+    hibernate:
+      ddl-auto: none  # Не генерировать схемы автоматически. Всё должно идти через Flyway.
+    properties:
+      hibernate:
+        format_sql: true  # Красивый (форматированный) SQL в логах
+        show_sql: true    # Показывать SQL-запросы в консоли
+    open-in-view: false   # Закрываем сессию EntityManager после запроса (рекомендуется для микросервисов)
+
+  flyway:
+    enabled: true               # Включаем миграции при старте
+    baseline-on-migrate: true   # Поддержка уже существующих БД без Flyway схемы
+    locations: classpath:db/migration  # Путь до миграций (обычно V1__*.sql, V2__*.sql и т.п.)
+
+  cloud:
+    consul:
+      host: localhost   # Хост Consul-сервера (в локальном режиме). В Docker-профиле будет заменён.
+      port: 8500
+      discovery:
+        port: 9092  # Порт, по которому сервис будет доступен (gRPC-порт, а не HTTP!)
+        register: true
+        enabled: true
+        prefer-ip-address: true  # Использовать hostname вместо IP (удобно в Docker-сети)
+        health-check-type: ttl    # Проверка живости через TTL (вместо HTTP-запросов)
+        ttl: 15s                  # Ожидается, что сервис будет отправлять heartbeat каждые 15 секунд
+        instance-id: ${spring.application.name}-${random.value}  # Генерация уникального ID экземпляра сервиса
+        heartbeat:
+          enabled: true
+        hostname: localhost  # Используется при регистрации в Consul
+
+grpc:
+  server:
+    port: 9092  # Порт, на котором работает gRPC-сервер. Его нужно указать в Consul discovery вручную.
+
+server:
+  port: 8092  # HTTP-порт (например, для Actuator)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus  # Открываем только нужные endpoint'ы (безопаснее)
+  metrics:
+    export:
+      prometheus:
+        enabled: true  # Поддержка экспорта метрик в Prometheus (по адресу /actuator/prometheus)

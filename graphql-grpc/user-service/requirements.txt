@@ -1,0 +1,27 @@
+# --- gRPC и Protobuf ---
+grpcio==1.63.0
+# Основная библиотека для реализации gRPC-клиентов и серверов на Python
+
+grpcio-tools==1.63.0
+# Инструменты для генерации Python-кода из .proto-файлов (аналог protoc + plugins)
+
+grpcio-health-checking
+# Поддержка health check'ов gRPC-сервисов (по аналогии с Spring Boot Actuator)
+
+protobuf==5.27.0
+# Сам протокол буфера обмена (protobuf). Используется совместно с grpcio-tools
+
+# --- Работа с базой данных PostgreSQL через SQLAlchemy ---
+SQLAlchemy==2.0.29
+# ORM для Python. Позволяет работать с таблицами как с объектами (аналог Hibernate)
+
+psycopg[binary]==3.1.18
+# PostgreSQL-драйвер для Python (третья версия, бинарный билд — быстрее и проще в установке)
+
+# --- Миграции схемы БД ---
+alembic
+# Миграции базы данных. Работает поверх SQLAlchemy. Аналог Flyway или Liquibase.
+
+# --- Дополнительно ---
+requests
+# HTTP-клиент для Python. Используется для интеграций, обращения к внешним REST/gRPC шлюзам, например, auth или внешней API.

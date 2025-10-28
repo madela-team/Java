@@ -1,0 +1,23 @@
+version: "3.8"  # Версия схемы docker-compose. 3.8 — стабильная и поддерживаемая большинством инструментов.
+
+services:
+  postgres:
+    image: postgres:15  # Используется официальный образ PostgreSQL версии 15.
+    container_name: order-db  # Имя контейнера (видно в `docker ps` и в сетевых alias других сервисов).
+
+    environment:
+      POSTGRES_DB: orderdb        # Название создаваемой базы данных.
+      POSTGRES_USER: user         # Имя пользователя БД.
+      POSTGRES_PASSWORD: password # Пароль пользователя.
+
+    ports:
+      - "5433:5432"  # Проброс порта: 5433 на хосте → 5432 в контейнере (стандартный порт PostgreSQL).
+      # Это позволяет одновременно запускать несколько PostgreSQL-инстансов (например, medication и order).
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Персистентный том для хранения данных БД.
+      # Даже если контейнер будет удалён, данные сохранятся на хосте в volume `pgdata`.
+
+volumes:
+  pgdata:  # Именованный volume, автоматически создаётся и подключается к `postgres`.

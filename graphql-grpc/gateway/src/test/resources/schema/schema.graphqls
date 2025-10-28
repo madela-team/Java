@@ -1,0 +1,33 @@
+scalar LocalDateTime
+scalar LocalDate
+
+type Query {
+    _empty: String # Заглушка для расширений
+}
+
+type Mutation {
+    _empty: String # Заглушка для расширений
+}
+
+# Общие типы
+type PharmacyStock {
+    pharmacyId: ID!
+    medicationId: ID!
+    quantity: Int!
+    expiryDate: String!
+}
+
+input Pagination {
+    page: Int!
+    size: Int!
+}
+
+input Sort {
+    field: String!
+    direction: SortDirection!
+}
+
+enum SortDirection {
+    ASC
+    DESC
+}

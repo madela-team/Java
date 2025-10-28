@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-add-pharmacy-id
+      author: madela
+      changes:
+        - addColumn:
+            tableName: medication
+            columns:
+              - column:
+                  name: pharmacy_id
+                  type: UUID

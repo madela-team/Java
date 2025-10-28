@@ -1,0 +1,54 @@
+server:
+  port: 8091 # Порт для HTTP-сервера Spring Boot (например, actuator и health endpoint)
+
+spring:
+  application:
+    name: inventory-service # Имя приложения, используется при регистрации в Consul
+
+  data:
+    mongodb:
+      host: localhost      # Хост MongoDB (можно заменить на имя контейнера, если работает в Docker-сети)
+      port: 27017          # Порт MongoDB
+      database: inventorydb # Название базы данных
+
+  cloud:
+    consul:
+      host: localhost      # Хост Consul (опять же, в проде здесь может быть адрес контейнера/сервиса)
+      port: 8500           # Порт Consul
+      discovery:
+        port: 9091         # gRPC-порт, который будет зарегистрирован в Consul как порт сервиса
+        register: true     # Включаем регистрацию в Consul
+        enabled: true      # Включаем клиентскую часть Discovery
+        prefer-ip-address: true # Можно оставить false, если используется hostname
+        health-check-type: ttl   # Тип проверки живости — TTL (не HTTP)
+        ttl: 15s                 # Интервал TTL. Клиент должен отправлять heartbeat не реже, чем каждые 15 секунд
+        instance-id: ${spring.application.name}-${random.value} # Уникальный ID экземпляра
+        heartbeat:
+          enabled: true    # Включаем автоматическую отправку heartbeat от Spring
+        hostname: localhost # Имя хоста для регистрации в Consul
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"       # Все endpoints (в т.ч. /actuator/health, /metrics) становятся доступными по HTTP
+  endpoint:
+    health:
+      show-details: always # Включаем отображение деталей состояния (например, для Mongo)
+  health:
+    mongo:
+      enabled: false       # Отключаем проверку Mongo, чтобы она не мешала здоровью всего приложения
+
+grpc:
+  server:
+    port: 9091 # Порт, на котором стартует gRPC-сервер (он же регистрируется в Consul)
+
+logging:
+  level:
+    org.springframework.cloud.consul: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.springframework.cloud.consul.discovery.ConsulDiscoveryClientConfiguration: DEBUG
+    org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistration: DEBUG
+    org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistry: DEBUG
+    org.springframework.cloud.consul.serviceregistry: TRACE
+    # Повышенный уровень логирования для отладки регистрации сервиса в Consul

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package dev.madela.apteka.order;
+
+option java_multiple_files = true;
+option java_package = "dev.madela.apteka.proto.order";
+option java_outer_classname = "OrderProto";
+
+service OrderService {
+  rpc CreateOrder (OrderRequest) returns (OrderResponse);
+  rpc GetUserOrders (UserOrdersRequest) returns (UserOrdersResponse);
+  rpc CancelOrder (CancelOrderRequest) returns (OrderResponse);
+  rpc CheckOrderLimit (CheckOrderLimitRequest) returns (CheckOrderLimitResponse);
+}
+
+message OrderRequest {
+  string user_id = 1;
+  repeated OrderItem items = 2;
+  string delivery_address = 3;
+}
+
+message UserOrdersRequest {
+  string user_id = 1;
+  Pagination pagination = 2;
+}
+
+message OrderResponse {
+  Order order = 1;
+}
+
+message UserOrdersResponse {
+  repeated Order orders = 1;
+  int32 total_count = 2;
+}
+
+message CancelOrderRequest {
+  string order_id = 1;
+}
+
+message Order {
+  string id = 1;
+  string user_id = 2;
+  repeated OrderItem items = 3;
+  string status = 4;
+  string created_at = 5;
+}
+
+message OrderItem {
+  string medication_id = 1;
+  int32 quantity = 2;
+}
+
+message CheckOrderLimitRequest {
+  string userId = 1;
+  int32 requested_quantity = 2;
+  }
+
+message CheckOrderLimitResponse {
+  bool allowed = 1;
+  }
+
+message Pagination {
+  int32 page = 1;
+  int32 size = 2;
+}

@@ -1,0 +1,19 @@
+# Расширение базового Query-типа (определённого в schema.graphqls)
+extend type Query {
+    # Получить список остатков по конкретному медикаменту
+    stockByMedication(medicationId: ID!): [PharmacyStock!]!
+    # Аргумент:
+    # - medicationId: ID медикамента, для которого нужно получить остатки
+    #
+    # Возвращает:
+    # - Массив объектов PharmacyStock (не может быть null, каждый элемент также не null)
+    #
+    # Пример запроса:
+    # {
+    #   stockByMedication(medicationId: "abc-123") {
+    #     pharmacyId
+    #     quantity
+    #     expiryDate
+    #   }
+    # }
+}

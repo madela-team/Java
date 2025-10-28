@@ -1,0 +1,21 @@
+version: '3.8'  # Используемая версия Docker Compose (актуальна на момент написания)
+
+services:
+  mongodb:
+    image: mongo:5.0                      # Образ MongoDB, версия 5.0 (стабильная и популярная)
+    container_name: mongodb-inventory-local  # Имя контейнера для удобства
+    ports:
+      - "27017:27017"                     # Проброс порта: хост:контейнер. 27017 — стандартный порт MongoDB
+    environment:
+      MONGO_INITDB_DATABASE: inventorydb # Название БД, которая будет создана при старте
+    volumes:
+      # Инициализация базы данными. JSON-файл с данными аптечных остатков
+      - ./mongo-init/pharmacy_stock.json:/docker-entrypoint-initdb.d/pharmacy_stock.json:ro
+
+      # Скрипт инициализации init.sh будет выполнен при запуске MongoDB
+      - ./mongo-init/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+
+    restart: always                      # Перезапуск контейнера при сбоях
+
+volumes:
+  mongo-data:                            # Объявление именованного тома (можно использовать в будущем)

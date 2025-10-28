@@ -1,0 +1,53 @@
+# -------------------- SCALARS --------------------
+
+# Пользовательский скаляр для работы с java.time.LocalDateTime
+scalar LocalDateTime
+
+# Пользовательский скаляр для java.time.LocalDate
+scalar LocalDate
+
+# Эти скаляры объявлены вручную, но их реализация маппится через DGS-конфигурацию в application.yaml,
+# где подключены соответствующие Java-классы (LocalDateScalar, LocalDateTimeScalar).
+
+
+# -------------------- ROOT TYPES --------------------
+
+type Query {
+    _empty: String
+    # Заглушка для Query — требуется, чтобы схема была валидной.
+    # Конкретные запросы добавляются через DGS DataFetcher'ы в других .graphqls или Java-классах.
+}
+
+type Mutation {
+    _empty: String
+    # Заглушка для Mutation — позволяет впоследствии расширять схему без конфликтов.
+}
+
+
+# -------------------- ОБЩИЕ ТИПЫ --------------------
+
+# Представление остатков медикаментов на складе аптеки
+type PharmacyStock {
+    pharmacyId: ID!        # ID аптеки
+    medicationId: ID!      # ID медикамента
+    quantity: Int!         # Кол-во единиц
+    expiryDate: String!    # Срок годности (ISO 8601 строкой, например: "2025-12-31")
+}
+
+# Входной тип для пагинации
+input Pagination {
+    page: Int!             # Номер страницы (начиная с 1)
+    size: Int!             # Количество записей на страницу
+}
+
+# Входной тип сортировки
+input Sort {
+    field: String!         # Название поля, по которому выполняется сортировка (например, "price" или "name")
+    direction: SortDirection! # Направление сортировки (вверх или вниз)
+}
+
+# Направления сортировки
+enum SortDirection {
+    ASC   # По возрастанию
+    DESC  # По убыванию
+}
