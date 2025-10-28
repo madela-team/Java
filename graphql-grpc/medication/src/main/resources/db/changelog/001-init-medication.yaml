@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-medication
+      author: madela
+      changes:
+        - createTable:
+            tableName: medication
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: NUMERIC(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: VARCHAR(100)
+              - column:
+                  name: is_prescription_only
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
+  - changeSet:
+      id: 002-create-active-substance
+      author: madela
+      changes:
+        - createTable:
+            tableName: active_substance
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: medication_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: concentration
+                  type: DOUBLE PRECISION
+
+        - addForeignKeyConstraint:
+            baseColumnNames: medication_id
+            baseTableName: active_substance
+            constraintName: fk_active_substance_medication
+            referencedColumnNames: id
+            referencedTableName: medication
+            onDelete: CASCADE

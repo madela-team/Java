@@ -1,0 +1,70 @@
+# -------------------- QUERY --------------------
+
+extend type Query {
+    # Получить список пользователей с фильтрацией и пагинацией
+    users(
+        filter: UserFilter         # Фильтрация по роли и дате регистрации
+        pagination: Pagination     # Пагинация: page + size
+    ): UserPage!
+    # Возвращает:
+    # - объект UserPage: содержит список пользователей и общее количество
+    # `!` означает, что результат не может быть null
+}
+
+
+# -------------------- MUTATION --------------------
+
+extend type Mutation {
+    # Удалить пользователя по ID
+    deleteUser(id: ID!): DeletedUserResult!
+    # Аргумент:
+    # - id: обязательный идентификатор пользователя
+    # Возвращает:
+    # - результат удаления, включая отменённые заказы
+}
+
+
+# -------------------- ОСНОВНЫЕ ТИПЫ --------------------
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    role: String!
+    registrationDate: String!  # В формате yyyy-MM-dd
+
+    orders(status: String): [Order!]!
+    # Список заказов пользователя
+    # - аргумент `status` позволяет фильтровать (например, только "CREATED" или "CANCELLED")
+    # - массив не может быть null, и каждый элемент тоже не null
+    #
+    # Важно: поле `orders` подгружается вручную (через DGS DataFetcher), т.к. не входит напрямую в gRPC-ответ UserService
+}
+
+# Страница пользователей с метаинформацией
+type UserPage {
+    items: [User!]!       # Список пользователей
+    totalCount: Int!      # Общее количество (для UI/пагинации)
+}
+
+# Результат удаления пользователя
+type DeletedUserResult {
+    id: ID!                       # ID удалённого пользователя
+    name: String!                 # Имя
+    cancelledOrders: [Order!]!   # Список отменённых заказов
+}
+
+
+# -------------------- INPUT --------------------
+
+# Входной фильтр для запроса пользователей
+input UserFilter {
+    role: String                # Фильтрация по роли (например, "admin", "client")
+    registrationDate: DateFilter # Фильтрация по дате регистрации
+}
+
+# Диапазон дат для фильтрации
+input DateFilter {
+    before: String  # Дата до (включительно), формат yyyy-MM-dd
+    after: String   # Дата после (включительно)
+}

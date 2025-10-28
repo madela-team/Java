@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-add-expiry-date-to-medication
+      author: madela
+      changes:
+        - addColumn:
+            tableName: medication
+            columns:
+              - column:
+                  name: expiry_date
+                  type: DATE

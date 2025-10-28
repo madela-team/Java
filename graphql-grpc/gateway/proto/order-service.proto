@@ -1,0 +1,89 @@
+syntax = "proto3"; // Используем актуальный синтаксис protobuf
+
+import "common.proto";
+// Импортируем общее сообщение Pagination, чтобы использовать пагинацию в списках заказов
+
+package dev.madela.apteka.order;
+// Пространство имён для микросервиса заказов (OrderService)
+
+option java_multiple_files = true; // Каждый message и сервис будет в отдельном Java-файле
+option java_package = "dev.madela.apteka.proto.order"; // Путь для Java-классов
+option java_outer_classname = "OrderProto"; // Имя внешнего класса (для совместимости, если multiple_files = false)
+
+// ------------------- gRPC-сервис заказов -------------------
+
+service OrderService {
+
+  // Создание нового заказа
+  rpc CreateOrder (OrderRequest) returns (OrderResponse);
+
+  // Получение списка заказов конкретного пользователя (с пагинацией)
+  rpc GetUserOrders (UserOrdersRequest) returns (UserOrdersResponse);
+
+  // Отмена заказа по ID
+  rpc CancelOrder (CancelOrderRequest) returns (OrderResponse);
+
+  // Проверка, можно ли создать заказ с определённым количеством товаров (например, лимиты на пользователя)
+  rpc CheckOrderLimit (CheckOrderLimitRequest) returns (CheckOrderLimitResponse);
+}
+
+
+// ------------------- Запросы и ответы -------------------
+
+// Запрос на создание заказа
+message OrderRequest {
+  string user_id = 1;               // ID пользователя, который оформляет заказ
+  repeated OrderItem items = 2;     // Список заказанных медикаментов
+  string delivery_address = 3;      // Адрес доставки (строкой)
+}
+
+// Запрос на получение заказов пользователя
+message UserOrdersRequest {
+  string user_id = 1;                            // ID пользователя
+  dev.madela.apteka.common.Pagination pagination = 2; // Пагинация
+}
+
+// Ответ с заказом (используется после создания или отмены)
+message OrderResponse {
+  Order order = 1;
+}
+
+// Ответ со списком заказов пользователя
+message UserOrdersResponse {
+  repeated Order orders = 1;   // Список заказов
+  int32 total_count = 2;       // Общее количество заказов (для пагинации)
+}
+
+// Запрос на отмену заказа
+message CancelOrderRequest {
+  string order_id = 1; // ID отменяемого заказа
+}
+
+// Проверка лимитов (например, нельзя заказать более 10 единиц за сутки)
+message CheckOrderLimitRequest {
+  string userId = 1;           // ID пользователя
+  int32 requested_quantity = 2; // Сколько единиц он хочет заказать
+}
+
+// Ответ на проверку лимитов
+message CheckOrderLimitResponse {
+  bool allowed = 1; // true — заказ разрешён, false — превышен лимит
+}
+
+
+// ------------------- Структуры -------------------
+
+// Сам заказ
+message Order {
+  string id = 1;                    // Уникальный ID заказа
+  string user_id = 2;              // Пользователь, оформивший заказ
+  repeated OrderItem items = 3;    // Состав заказа
+  string status = 4;               // Статус заказа (например, "CREATED", "CANCELLED")
+  string created_at = 5;           // Дата и время создания (строкой, ISO 8601)
+}
+
+// Один элемент заказа — медикамент + количество
+message OrderItem {
+  string medication_id = 1; // ID медикамента
+  int32 quantity = 2;       // Заказанное количество
+}

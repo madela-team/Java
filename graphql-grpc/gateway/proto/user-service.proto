@@ -1,0 +1,85 @@
+syntax = "proto3"; // Протокол сериализации: protobuf, синтаксис версии 3
+
+package dev.madela.apteka.user;
+// Пространство имён микросервиса пользователей
+
+option java_multiple_files = true;
+option java_package = "dev.madela.apteka.proto.user";
+option java_outer_classname = "UserProto"; // Используется, если multiple_files отключён
+
+
+// ------------------- gRPC-сервис -------------------
+
+service UserService {
+
+  // Получить пользователя по ID
+  rpc GetUserById (UserIdRequest) returns (UserResponse);
+
+  // Создать нового пользователя
+  rpc CreateUser (CreateUserRequest) returns (UserResponse);
+
+  // Получить список пользователей с фильтрацией и пагинацией
+  rpc GetUserList (UserListRequest) returns (UserListResponse);
+
+  // Удалить пользователя. Возможно, с каскадной отменой заказов.
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+
+// ------------------- Запросы -------------------
+
+// Запрос на получение пользователя по ID
+message UserIdRequest {
+  string id = 1; // Уникальный идентификатор пользователя
+}
+
+// Запрос на создание нового пользователя
+message CreateUserRequest {
+  string name = 1;  // Имя пользователя
+  string email = 2; // Email
+}
+
+// Запрос на получение списка пользователей
+message UserListRequest {
+  string role = 1;                 // Фильтрация по роли (например, "client", "admin")
+  string registration_before = 2; // Дата, до которой пользователь зарегистрировался (формат: yyyy-MM-dd)
+  string registration_after = 3;  // Дата, после которой пользователь зарегистрировался
+  int32 page = 4;                 // Номер страницы (для пагинации)
+  int32 size = 5;                 // Кол-во элементов на страницу
+}
+
+// Запрос на удаление пользователя
+message DeleteUserRequest {
+  string id = 1;
+}
+
+
+// ------------------- Ответы -------------------
+
+// Ответ с полной информацией о пользователе
+message UserResponse {
+  string id = 1;               // ID пользователя
+  string name = 2;             // Имя
+  string email = 3;            // Email
+  string role = 4;             // Роль в системе
+  string registration_date = 5; // Дата регистрации (формат: yyyy-MM-dd)
+}
+
+// Ответ со списком пользователей
+message UserListResponse {
+  repeated UserResponse users = 1; // Список пользователей
+  int32 total_count = 2;           // Общее количество записей (для пагинации)
+}
+
+// Краткое описание заказа (используется при удалении пользователя)
+message OrderSummary {
+  string id = 1;      // ID заказа
+  string status = 2;  // Статус заказа (например, "CANCELLED")
+}
+
+// Ответ после удаления пользователя
+message DeleteUserResponse {
+  string id = 1;                       // ID удалённого пользователя
+  string name = 2;                     // Имя
+  repeated OrderSummary cancelled_orders = 3; // Список заказов, отменённых из-за удаления пользователя
+}

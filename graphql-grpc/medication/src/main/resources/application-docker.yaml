@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: medication-service  # Уникальное имя сервиса, используется для регистрации в Consul и логирования.
+
+  datasource:
+    url: jdbc:postgresql://postgres-medication:5432/medicationdb
+    # JDBC URL для подключения к контейнеру PostgreSQL.
+    # 'postgres-medication' — это имя контейнера PostgreSQL в Docker Compose сети.
+    username: user            # Имя пользователя БД (должно совпадать с конфигурацией контейнера PostgreSQL).
+    password: password        # Пароль для подключения к БД.
+    driver-class-name: org.postgresql.Driver  # Драйвер PostgreSQL JDBC.
+
+  cloud:
+    consul:
+      host: consul           # Имя контейнера Consul, используемое в Docker-сети как DNS-имя.
+      port: 8500             # Порт, на котором Consul-сервер принимает HTTP-запросы.
+      discovery:
+        prefer-ip-address: true   # Использовать hostname вместо IP-адреса при регистрации в Consul.
+        port: 9090                # Порт gRPC-сервера, который будет опубликован в Consul.
+        register: true           # Включение регистрации этого сервиса в Consul.
+        enabled: true            # Включение механизма service discovery через Consul.
+        health-check-type: ttl   # Проверка живости (health check) через TTL. Требуется периодический heartbeat.
+        ttl: 15s                 # Таймаут TTL — сервис должен посылать heartbeat не реже чем каждые 15 секунд.
+        instance-id: ${spring.application.name}-${random.value}
+        # Уникальный ID экземпляра, составляется из имени сервиса и случайного значения.
+        heartbeat:
+          enabled: true         # Автоматическое посылание heartbeat в Consul для прохождения TTL-проверки.
+        hostname: consul        # Имя хоста, используемое для регистрации — совпадает с именем контейнера Consul.

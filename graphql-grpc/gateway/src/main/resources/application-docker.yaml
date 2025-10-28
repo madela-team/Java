@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    consul:
+      host: consul      # Имя хоста или контейнера, где работает Consul (обычно это контейнер в одной сети Docker Compose)
+      port: 8500        # Стандартный порт HTTP-интерфейса Consul
+      discovery:
+        port: 8080      # Указывается порт текущего сервиса, если бы он регистрировался (здесь регистрация отключена)
+        enabled: true   # Включена возможность находить другие сервисы через Consul
+        register: false # Сам gateway в реестр не добавляется — он не предоставляет внешние gRPC/REST-API, он агрегирует их
+      config:
+        enabled: false  # Конфигурация из KV Consul отключена — всё берётся из локальных YAML-файлов
+  config:
+    activate:
+      on-profile: docker # Этот файл активируется, если задан профиль: --spring.profiles.active=docker
+
+server:
+  port: 8080 # HTTP-порт приложения (GraphQL и REST endpoints). В Docker-среде обычно пробрасывается наружу.

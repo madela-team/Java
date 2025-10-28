@@ -1,0 +1,25 @@
+version: "3.8"  # Современная и стабильная версия синтаксиса Compose
+
+services:
+  postgres:
+    image: postgres:14  # Используется официальный образ PostgreSQL 14 версии
+    container_name: postgres-medication-local  # Удобное имя контейнера для локальной отладки
+
+    environment:
+      POSTGRES_DB: medicationdb       # Название создаваемой базы данных
+      POSTGRES_USER: user             # Пользователь БД
+      POSTGRES_PASSWORD: password     # Пароль пользователя
+
+    ports:
+      - "5432:5432"  # Пробрасываем порт PostgreSQL хоста на контейнер
+
+    volumes:
+      - postgres-medication-data:/var/lib/postgresql/data
+      # Подключаем том для постоянного хранения данных БД
+
+    restart: unless-stopped
+    # Контейнер будет автоматически перезапускаться, кроме случаев, когда явно остановлен вручную
+
+volumes:
+  postgres-medication-data:
+  # Том определён здесь — это даёт Docker возможность переиспользовать его между перезапусками

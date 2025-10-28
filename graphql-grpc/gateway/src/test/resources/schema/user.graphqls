@@ -1,0 +1,40 @@
+extend type Query {
+    users(
+        filter: UserFilter
+        pagination: Pagination
+    ): UserPage!
+}
+
+extend type Mutation {
+    deleteUser(id: ID!): DeletedUserResult!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    role: String!
+    registrationDate: String!
+    orders(status: String): [Order!]!
+}
+
+type UserPage {
+    items: [User!]!
+    totalCount: Int!
+}
+
+type DeletedUserResult {
+    id: ID!
+    name: String!
+    cancelledOrders: [Order!]!
+}
+
+input UserFilter {
+    role: String
+    registrationDate: DateFilter
+}
+
+input DateFilter {
+    before: String
+    after: String
+}

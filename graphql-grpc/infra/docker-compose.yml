@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  consul:
+    image: hashicorp/consul:1.15
+    container_name: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: agent -dev -client=0.0.0.0
+    restart: unless-stopped
+
+  postgres-medication:
+    image: postgres:14
+    container_name: postgres-medication
+    environment:
+      POSTGRES_DB: medicationdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-medication-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  postgres-order:
+    image: postgres:14
+    container_name: postgres-order
+    environment:
+      POSTGRES_DB: orderdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-order-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  postgres-user:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--auth=md5"
+    ports:
+      - "5434:5432"
+
+  mongodb-inventory:
+    image: mongo:5.0
+    container_name: mongodb-inventory
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-inventory-data:/data/db
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: ../gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    volumes:
+      - gradle-cache:/home/gradle/.gradle
+    depends_on:
+      - consul
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+
+  medication:
+    build:
+      context: ../medication
+    container_name: medication
+    volumes:
+      - gradle-cache:/home/gradle/.gradle
+    depends_on:
+      - postgres-medication
+      - consul
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+
+  order:
+    build:
+      context: ../order
+    container_name: order
+    volumes:
+      - gradle-cache:/home/gradle/.gradle
+    depends_on:
+      - postgres-order
+      - consul
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+
+  inventory:
+    build:
+      context: ../inventory
+    container_name: inventory
+    volumes:
+      - gradle-cache:/home/gradle/.gradle
+    depends_on:
+      - mongodb-inventory
+      - consul
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+
+  user:
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    depends_on:
+      - consul
+      - postgres-user
+    environment:
+    - SERVICE_PORT=9093
+    - SERVICE_NAME=user-service
+    - SERVICE_ID=user-service-1
+    - SERVICE_ADDRESS=user-service
+    - CONSUL_HOST=consul
+    - CONSUL_PORT=8500
+    - POSTGRES_HOST=postgres-user
+    - POSTGRES_PORT=5432
+    - POSTGRES_DB=users
+    - POSTGRES_USER=user
+    - POSTGRES_PASSWORD=password
+    ports:
+      - "9093:9093"
+    restart: unless-stopped
+
+volumes:
+  postgres-medication-data:
+  postgres-order-data:
+  mongo-inventory-data:
+  gradle-cache:

@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: gateway  # Уникальное имя сервиса, используется в логах, мониторинге и при обращении к Spring Cloud
+  cloud:
+    consul:
+      host: consul   # Имя хоста (или контейнера), на котором работает Consul. В docker-compose он называется "consul"
+      port: 8500     # Порт HTTP-интерфейса Consul
+      discovery:
+        enabled: true     # Включаем возможность находить другие сервисы через Consul
+        register: false   # Gateway сам не регистрируется в Consul (т.е. его не увидят другие микросервисы)
+  grpc:
+    server:
+      port: 9080  # Порт, на котором gRPC-сервер gateway'я принимает входящие запросы
+  config:
+    import: 'optional:consul:'
+    # Разрешает подгружать конфигурацию из KV-хранилища в Consul (если там что-то есть).
+    # Ключевое слово `optional` предотвращает падение приложения при отсутствии конфига в Consul.
+
+server:
+  port: 8080  # Порт, на котором Spring Boot-приложение слушает HTTP-запросы (например, GraphQL)
+
+dgs:
+  graphql:
+    schemas:
+      location: classpath:schema/
+      # Путь к директории, где лежат .graphql-файлы схемы
+      # Это нужно для Netflix DGS: он собирает схемы GraphQL из этого каталога
+    scalars:
+      - type: dev.madela.apteka.scalars.LocalDateScalar      # Пользовательский скаляр LocalDate (Java 8+)
+      - name: LocalDate                                       # Название, используемое в GraphQL-схеме
+      - type: dev.madela.apteka.scalars.LocalDateTimeScalar  # Пользовательский скаляр LocalDateTime
+      - name: LocalDateTime
+
+logging:
+  level:
+    com:
+      netflix:
+        graphql:
+          dgs: DEBUG  # Включаем отладочные логи для GraphQL-инструментов Netflix DGS (можно временно отключать в проде)

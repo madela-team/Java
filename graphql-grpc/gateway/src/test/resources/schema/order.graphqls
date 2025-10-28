@@ -1,0 +1,35 @@
+extend type Query {
+    orders(userId: ID!): [Order!]!
+}
+
+extend type Mutation {
+    createOrder(input: OrderInput!): Order!
+}
+
+type Order {
+    id: ID!
+    userId: ID!
+    items: [OrderItem!]!
+    createdAt: LocalDate!
+    status: String!
+    deliveryAddress: String
+    total: Float!
+    medications: [Medication!]!
+}
+
+type OrderItem {
+    medicationId: ID!
+    quantity: Int!
+    price: Float!
+}
+
+input OrderInput {
+    userId: ID!
+    items: [OrderItemInput!]!
+    deliveryAddress: String
+}
+
+input OrderItemInput {
+    medicationId: ID!
+    quantity: Int!
+}
