@@ -1,0 +1,22 @@
+-- USER SERVICE DB
+
+CREATE DATABASE users;
+\c users;
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- REMINDER SERVICE DB
+
+CREATE DATABASE reminder;
+\c reminder;
+
+CREATE TABLE IF NOT EXISTS reminders (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    text VARCHAR(500) NOT NULL,
+    remind_at TIMESTAMP NOT NULL
+);

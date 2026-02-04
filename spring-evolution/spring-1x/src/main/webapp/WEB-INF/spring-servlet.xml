@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean name="/user.htm" class="dev.madela.controller.UserController">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+    <bean name="/reminder.htm" class="dev.madela.controller.ReminderController">
+        <property name="reminderService" ref="reminderService"/>
+    </bean>
+
+</beans>

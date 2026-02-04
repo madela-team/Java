@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5432/users
+    username: postgres
+    password: postgres

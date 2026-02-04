@@ -1,0 +1,79 @@
+{
+  "info": {
+    "_postman_id": "c1a3b6c9-92a2-4a44-9dfb-2a7a0b6f5d11",
+    "name": "Эволюция Spring - шестое поколение",
+    "description": "Коллекция Postman для демонстрации Spring 6.x",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "admin", "type": "string" },
+      { "key": "password", "value": "admin", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "userId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "USER — Create User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"name\": \"Olga\", \"email\": \"olga@madela.dev\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "USER — Get User by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/users/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users", "{{userId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "REMINDER — Create Reminder",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"userId\": {{userId}}, \"text\": \"Купить молоко\", \"remindAt\": \"2026-01-19T15:30:00\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/reminders",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reminders"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "REMINDER — Get Reminders by User",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reminders/user/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reminders", "user", "{{userId}}"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

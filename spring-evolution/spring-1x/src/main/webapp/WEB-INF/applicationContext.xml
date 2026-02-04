@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://postgres:5432/testdb"/>
+        <property name="username" value="test"/>
+        <property name="password" value="test"/>
+    </bean>
+
+    <bean id="userDao" class="dev.madela.dao.UserDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="reminderDao" class="dev.madela.dao.ReminderDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="userService" class="dev.madela.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <bean id="reminderService" class="dev.madela.service.ReminderServiceImpl">
+        <property name="reminderDao" ref="reminderDao"/>
+    </bean>
+
+    <!-- Acegi Security (правильные пакеты org.*) -->
+    <bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+        <property name="filterInvocationDefinitionSource">
+            <value>
+                CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+                PATTERN_TYPE_APACHE_ANT
+                /**=httpSessionContextIntegrationFilter,basicProcessingFilter,anonymousProcessingFilter
+            </value>
+        </property>
+    </bean>
+
+    <bean id="httpSessionContextIntegrationFilter"
+          class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"/>
+
+    <bean id="basicProcessingFilter"
+          class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationEntryPoint" ref="basicEntryPoint"/>
+    </bean>
+
+    <bean id="basicEntryPoint"
+          class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+        <property name="realmName" value="Spring1xRealm"/>
+    </bean>
+
+    <bean id="anonymousProcessingFilter"
+          class="org.acegisecurity.providers.anonymous.AnonymousProcessingFilter">
+        <property name="key" value="anonymousKey"/>
+        <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS"/>
+    </bean>
+
+    <bean id="authenticationManager"
+          class="org.acegisecurity.providers.ProviderManager">
+        <property name="providers">
+            <list>
+                <bean class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+                    <property name="userDetailsService" ref="inMemoryUserService"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="inMemoryUserService"
+          class="org.acegisecurity.userdetails.memory.InMemoryDaoImpl">
+        <property name="userMap">
+            <value>admin=admin,ROLE_ADMIN</value>
+        </property>
+    </bean>
+
+</beans>

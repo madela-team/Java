@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:13
+    container_name: spring3-postgres
+    environment:
+      POSTGRES_DB: reminder
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-init:/docker-entrypoint-initdb.d
+
+  app:
+    build: .
+    container_name: spring3-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db

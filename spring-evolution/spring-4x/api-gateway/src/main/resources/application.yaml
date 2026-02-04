@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery:8761/eureka/
+
+zuul:
+  routes:
+    users:
+      path: /users/**
+      serviceId: user-service
+
+    reminders:
+      path: /reminders/**
+      serviceId: reminder-service
