@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+
+  discovery:
+    build:
+      context: .
+      dockerfile: discovery-service/Dockerfile
+    ports:
+      - "8761:8761"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    depends_on:
+      - discovery
+      - postgres
+
+  reminder-service:
+    build:
+      context: .
+      dockerfile: reminder-service/Dockerfile
+    depends_on:
+      - discovery
+      - postgres
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    depends_on:
+      - discovery
+    ports:
+      - "8080:8080"
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"

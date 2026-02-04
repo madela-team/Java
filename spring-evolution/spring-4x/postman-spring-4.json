@@ -1,0 +1,89 @@
+{
+  "info": {
+    "_postman_id": "a22c14a8-8c87-4e7f-92f3-1c9c4e3e6f77",
+    "name": "Эволюция Spring - четвёртое поколение",
+    "description": "Коллекция Postman для Spring 4.x на основе микросервисов с централизованной системой безопасности Spring Security (базовая аутентификация).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "admin", "type": "string" },
+      { "key": "password", "value": "admin", "type": "string" }
+    ]
+  },
+
+  "item": [
+
+    {
+      "name": "USER — Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"name\": \"Olga\", \"email\": \"olga@madela.dev\" }"
+        },
+        "url": {
+          "raw": "http://localhost:8080/users/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["users", "api", "users"]
+        }
+      }
+    },
+
+    {
+      "name": "USER — Get User by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/users/api/users/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["users", "api", "users", "1"]
+        }
+      }
+    },
+
+    {
+      "name": "REMINDER — Create Reminder",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"userId\": 1, \"text\": \"Купить молоко\", \"remindAt\": \"2025-12-31T15:30:00\" }"
+        },
+        "url": {
+          "raw": "http://localhost:8080/reminders/api/reminders",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["reminders", "api", "reminders"]
+        }
+      }
+    },
+
+    {
+      "name": "REMINDER — Get Reminders by User",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/reminders/api/reminders/user/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["reminders", "api", "reminders", "user", "1"]
+        }
+      }
+    }
+  ]
+}

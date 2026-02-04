@@ -1,0 +1,37 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: reminder-service
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    apiversion:
+      use:
+        header: X-API-Version
+      supported: ["1", "2"]
+      required: true
+      detect-supported: true
+  datasource:
+    url: jdbc:postgresql://postgres:5432/reminder
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+app:
+  userServiceBaseUrl: http://user-service:8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

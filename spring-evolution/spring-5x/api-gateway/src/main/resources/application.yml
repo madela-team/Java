@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: http://user-service:8081
+              predicates:
+                - Path=/api/users,/api/users/**
+
+            - id: reminder-service
+              uri: http://reminder-service:8082
+              predicates:
+                - Path=/api/reminders,/api/reminders/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

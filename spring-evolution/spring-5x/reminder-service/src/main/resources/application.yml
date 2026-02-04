@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: reminder-service
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5432/reminder
+    username: postgres
+    password: postgres
+
+app:
+  userServiceBaseUrl: http://user-service:8081

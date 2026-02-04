@@ -1,0 +1,62 @@
+{
+  "info": {
+    "_postman_id": "b0f0e6de-0e5a-4b9a-9c25-4c8f2d7a9c10",
+    "name": "Эволюция Spring - пятое поколение",
+    "description": "Коллекция Postman для Spring 5.x в реактивном стиле. Базовая аутентификация (admin/admin).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "admin", "type": "string" },
+      { "key": "password", "value": "admin", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "gateway", "value": "http://localhost:8080" },
+    { "key": "userId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "USER — Create User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"name\": \"Olga\", \"email\": \"olga@madela.dev\" }" },
+        "url": { "raw": "{{gateway}}/api/users", "host": ["{{gateway}}"], "path": ["api", "users"] }
+      },
+      "response": []
+    },
+    {
+      "name": "USER — Get User by ID",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{gateway}}/api/users/{{userId}}", "host": ["{{gateway}}"], "path": ["api", "users", "{{userId}}"] }
+      },
+      "response": []
+    },
+    {
+      "name": "REMINDER — Create Reminder",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"userId\": 1, \"text\": \"Купить молоко\", \"remindAt\": \"2025-12-31 15:30:00\" }" },
+        "url": { "raw": "{{gateway}}/api/reminders", "host": ["{{gateway}}"], "path": ["api", "reminders"] }
+      },
+      "response": []
+    },
+    {
+      "name": "REMINDER — Get Reminders by User",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{gateway}}/api/reminders?userId={{userId}}",
+          "host": ["{{gateway}}"],
+          "path": ["api", "reminders"],
+          "query": [{ "key": "userId", "value": "{{userId}}" }]
+        }
+      },
+      "response": []
+    }
+  ]
+}

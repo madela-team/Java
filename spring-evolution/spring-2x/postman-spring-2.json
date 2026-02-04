@@ -1,0 +1,111 @@
+{
+  "info": {
+    "_postman_id": "bdc18462-72b7-4c65-b753-25aac94b8c5b",
+    "name": "Эволюция Spring - второе поколение",
+    "description": "Коллекция Postman для тестирования версии Spring 2.x. Поддерживает REST API для пользователей и напоминаний с базовой аутентификацией.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "admin", "type": "string" },
+      { "key": "password", "value": "admin", "type": "string" }
+    ]
+  },
+
+  "item": [
+    {
+      "name": "USER — Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/user.htm",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["user"]
+        },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "name", "value": "Olga", "type": "text" },
+            { "key": "email", "value": "olga@madela.dev", "type": "text" }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "USER — Get User by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/user.htm?id=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["user"],
+          "query": [
+            { "key": "id", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "REMINDER — Create Reminder",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/reminder.htm",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["reminder"]
+        },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "userId", "value": "1", "type": "text" },
+            { "key": "text", "value": "Купить молоко", "type": "text" },
+            { "key": "remindAt", "value": "2025-12-31 15:30:00", "type": "text" }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "REMINDER — Get Reminders by User ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/reminder.htm?userId=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["reminder"],
+          "query": [
+            { "key": "userId", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

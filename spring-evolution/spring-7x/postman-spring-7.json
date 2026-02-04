@@ -1,0 +1,73 @@
+{
+  "info": {
+    "_postman_id": "d9a2b2d9-0a1e-4f1c-9ef8-7f4c9c2d8a11",
+    "name": "Эволюция Spring - седьмое поколение",
+    "description": "Коллекция Postman для демонстрации Spring 7.x",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "admin", "type": "string" },
+      { "key": "password", "value": "admin", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "gateway", "value": "http://localhost:8080" },
+    { "key": "apiVersion", "value": "1" },
+    { "key": "userId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "USER — Create (v{{apiVersion}})",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-API-Version", "value": "{{apiVersion}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{ \"name\": \"Olga\", \"email\": \"olga@madela.dev\" }" },
+        "url": { "raw": "{{gateway}}/api/users", "host": ["{{gateway}}"], "path": ["api", "users"] }
+      },
+      "response": []
+    },
+    {
+      "name": "USER — Get by ID (v{{apiVersion}})",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Version", "value": "{{apiVersion}}" }],
+        "url": { "raw": "{{gateway}}/api/users/{{userId}}", "host": ["{{gateway}}"], "path": ["api", "users", "{{userId}}"] }
+      },
+      "response": []
+    },
+    {
+      "name": "REMINDER — Create (v{{apiVersion}})",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-API-Version", "value": "{{apiVersion}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"userId\": 1, \"text\": \"Купить молоко\", \"remindAt\": \"2026-12-31T15:30:00+00:00\" }"
+        },
+        "url": { "raw": "{{gateway}}/api/reminders", "host": ["{{gateway}}"], "path": ["api", "reminders"] }
+      },
+      "response": []
+    },
+    {
+      "name": "REMINDER — Get by userId (v{{apiVersion}})",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Version", "value": "{{apiVersion}}" }],
+        "url": {
+          "raw": "{{gateway}}/api/reminders/users/{{userId}}",
+          "host": ["{{gateway}}"],
+          "path": ["api", "reminders", "users", "{{userId}}"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "info": {
+    "_postman_id": "c7c8d7c4-5e4f-4b34-9b5e-7c6a5a1c2e31",
+    "name": "Эволюция Spring - третье поколение",
+    "description": "Коллекция Postman для демонстрации Spring 3.x.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "admin", "type": "string" },
+      { "key": "password", "value": "admin", "type": "string" }
+    ]
+  },
+
+  "item": [
+
+    {
+      "name": "USER — Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/users?name=Olga&email=olga@madela.dev",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "users"],
+          "query": [
+            { "key": "name", "value": "Olga" },
+            { "key": "email", "value": "olga@madela.dev" }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "USER — Get User by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/users?id=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "users"],
+          "query": [
+            { "key": "id", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "REMINDER — Create Reminder",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/reminders?userId=1&text=Купить молоко&remindAt=2025-12-31 15:30:00",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "reminders"],
+          "query": [
+            { "key": "userId", "value": "1" },
+            { "key": "text", "value": "Купить молоко" },
+            { "key": "remindAt", "value": "2025-12-31 15:30:00" }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "REMINDER — Get Reminders by User",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/reminders?userId=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "reminders"],
+          "query": [
+            { "key": "userId", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
