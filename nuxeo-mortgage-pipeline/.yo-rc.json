@@ -1,0 +1,10 @@
+{
+  "generator-nuxeo": {
+    "lastRemote": "/Users/denisanenkov/.cache/node-yeoman-remote-cache/nuxeo/generator-nuxeo-meta/stable",
+    "promptValues": {
+      "parent_version": "10.10",
+      "package": "com.madela.dev"
+    },
+    "_nuxeo_version": "10.10"
+  }
+}

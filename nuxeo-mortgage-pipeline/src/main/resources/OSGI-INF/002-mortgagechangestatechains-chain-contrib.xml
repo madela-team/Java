@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<component name="com.madela.dev.operation.mortgagechengestatechains">
+    <extension point="chains" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <chain id="Mortgage.ChangeStateFromDraftToSubmittedChain">
+            <operation id="Mortgage.TransitionToSubmittedOperation"/>
+        </chain>
+    </extension>
+    <extension point="chains" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <chain id="Mortgage.ChangeStateFromSubmittedToScoringChain">
+            <operation id="Mortgage.TransitionToScoringOperation"/>
+        </chain>
+    </extension>
+    <extension point="chains" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <chain id="Mortgage.ChangeStateFromScoringToCommitteeChain">
+            <operation id="Mortgage.CalculateRiskOperation"/>
+            <operation id="Mortgage.TransitionToCommitteeOperation"/>
+        </chain>
+    </extension>
+    <extension point="chains" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <chain id="Mortgage.ChangeStateFromCommitteeToApprovedChain">
+            <operation id="Mortgage.TransitionToApproveOperation"/>
+        </chain>
+    </extension>
+    <extension point="chains" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <chain id="Mortgage.ChangeStateFromCommitteeToRejectedChain">
+            <operation id="Mortgage.TransitionToRejectOperation"/>
+        </chain>
+    </extension>
+</component>

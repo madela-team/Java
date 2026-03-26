@@ -1,0 +1,11 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: com.madela.dev
+Bundle-Version: 1.0.0
+Bundle-Name: madela-operations
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.madela.dev.madela-operations;singleton=true
+Nuxeo-Component: OSGI-INF/001-mortgagechangestateoperations-operation-contrib.xml,
+                 OSGI-INF/002-mortgagechangestatechains-chain-contrib.xml,
+                 OSGI-INF/003-mortgagelifecycleeventhandler-listener-contrib.xml

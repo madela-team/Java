@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<component name="com.madela.dev.operation.mortgagechengestateoperations">
+    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <operation class="com.madela.dev.operation.business.CalculateRiskOperation"/>
+    </extension>
+    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <operation class="com.madela.dev.operation.system.TransitionToSubmittedOperation"/>
+    </extension>
+    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <operation class="com.madela.dev.operation.system.TransitionToScoringOperation"/>
+    </extension>
+    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <operation class="com.madela.dev.operation.system.TransitionToCommitteeOperation"/>
+    </extension>
+    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <operation class="com.madela.dev.operation.system.TransitionToApproveOperation"/>
+    </extension>
+    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+        <operation class="com.madela.dev.operation.system.TransitionToRejectOperation"/>
+    </extension>
+</component>
