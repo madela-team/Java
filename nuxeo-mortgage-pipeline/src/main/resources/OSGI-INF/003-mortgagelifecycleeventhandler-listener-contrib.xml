@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<component name="com.madela.dev.listener.MortgageDraftToSubmittedListener">
+    <extension point="listener" target="org.nuxeo.ecm.core.event.EventServiceComponent" >
+        <listener name="MortgageDraftToSubmittedListener" class="com.madela.dev.listener.MortgageDraftToSubmittedListener">
+            <event>documentModified</event>
+        </listener>
+    </extension>
+    <extension point="listener" target="org.nuxeo.ecm.core.event.EventServiceComponent" >
+        <listener name="MortgageSubmittedToScoringListener" class="com.madela.dev.listener.MortgageSubmittedToScoringListener">
+            <event>documentModified</event>
+        </listener>
+    </extension>
+    <extension point="listener" target="org.nuxeo.ecm.core.event.EventServiceComponent" >
+        <listener name="MortgageScoringToCommitteeListener" class="com.madela.dev.listener.MortgageScoringToCommitteeListener" postCommit="true">
+            <event>documentModified</event>
+        </listener>
+    </extension>
+</component>

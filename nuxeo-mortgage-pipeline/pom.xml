@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.nuxeo</groupId>
+    <artifactId>nuxeo-addons-parent</artifactId>
+    <version>10.10</version>
+  </parent>
+  <artifactId>madela-operations</artifactId>
+  <groupId>com.madela.dev</groupId>
+  <version>1.0-SNAPSHOT</version>
+  <name>Madela operations</name>
+  <description />
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven-public</id>
+      <url>https://packages.nuxeo.com/repository/maven-public/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <repositories>
+    <repository>
+      <id>nuxeo-public</id>
+      <url>https://maven-eu.nuxeo.org/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>nuxeo-releases</id>
+      <url>https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases</url>
+    </repository>
+    <repository>
+      <id>nuxeo-packages</id>
+      <url>https://packages.nuxeo.com/repository/maven-public/</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.nuxeo.tools</groupId>
+        <artifactId>nuxeo-studio-maven-plugin</artifactId>
+        <version>1.1.4</version>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
